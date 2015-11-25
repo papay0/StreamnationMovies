@@ -11,7 +11,7 @@
         <!--Movies-->
         <scene sceneID="zg0-zC-qBe">
             <objects>
-                <collectionViewController id="30V-Nn-xJ9" customClass="StreamnationMoviesCollectionViewController" customModule="StreamnationMovies" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="moviesCollectionView" id="30V-Nn-xJ9" customClass="StreamnationMoviesCollectionViewController" customModule="StreamnationMovies" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="oPH-Lo-2UP">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -44,7 +44,7 @@
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="RmV-7w-S6c">
                                                         <rect key="frame" x="8" y="0.0" width="168" height="25"/>
                                                         <animations/>
-                                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
@@ -69,10 +69,12 @@
                                 </view>
                                 <animations/>
                                 <constraints>
+                                    <constraint firstItem="aVC-7b-khA" firstAttribute="centerY" secondItem="IPb-eV-ujy" secondAttribute="centerY" id="3xM-KX-AHN"/>
                                     <constraint firstItem="b9A-w4-D9N" firstAttribute="bottom" secondItem="aVC-7b-khA" secondAttribute="bottom" id="CEh-dV-6Q6"/>
                                     <constraint firstItem="b9A-w4-D9N" firstAttribute="trailing" secondItem="IPb-eV-ujy" secondAttribute="trailingMargin" id="Dmg-PN-xjn"/>
                                     <constraint firstItem="aVC-7b-khA" firstAttribute="bottom" secondItem="IPb-eV-ujy" secondAttribute="bottomMargin" id="Ejo-e4-qqL"/>
                                     <constraint firstItem="aVC-7b-khA" firstAttribute="top" secondItem="IPb-eV-ujy" secondAttribute="topMargin" id="FUm-mz-W78"/>
+                                    <constraint firstItem="aVC-7b-khA" firstAttribute="centerX" secondItem="IPb-eV-ujy" secondAttribute="centerX" id="QD3-2S-VrU"/>
                                     <constraint firstItem="aVC-7b-khA" firstAttribute="leading" secondItem="IPb-eV-ujy" secondAttribute="leadingMargin" id="egy-Pg-2cb"/>
                                     <constraint firstItem="b9A-w4-D9N" firstAttribute="leading" secondItem="aVC-7b-khA" secondAttribute="leading" id="hNq-oj-ITD"/>
                                     <constraint firstItem="b9A-w4-D9N" firstAttribute="trailing" secondItem="aVC-7b-khA" secondAttribute="trailing" id="ldZ-Rx-qMc"/>

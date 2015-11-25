@@ -19,6 +19,9 @@
 		926399391C05234800885CFB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 926399371C05234800885CFB /* LaunchScreen.storyboard */; };
 		926399441C05234800885CFB /* StreamnationMoviesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 926399431C05234800885CFB /* StreamnationMoviesTests.swift */; };
 		9263994F1C05234800885CFB /* StreamnationMoviesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9263994E1C05234800885CFB /* StreamnationMoviesUITests.swift */; };
+		92AFCD081C0635EE00F1634D /* InfoMovies+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92AFCD061C0635EE00F1634D /* InfoMovies+CoreDataProperties.swift */; };
+		92AFCD091C0635EE00F1634D /* InfoMovies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92AFCD071C0635EE00F1634D /* InfoMovies.swift */; };
+		92AFCD0D1C064B9C00F1634D /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92AFCD0C1C064B9C00F1634D /* CoreDataStackManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +60,9 @@
 		9263994A1C05234800885CFB /* StreamnationMoviesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StreamnationMoviesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9263994E1C05234800885CFB /* StreamnationMoviesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamnationMoviesUITests.swift; sourceTree = "<group>"; };
 		926399501C05234800885CFB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		92AFCD061C0635EE00F1634D /* InfoMovies+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "InfoMovies+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		92AFCD071C0635EE00F1634D /* InfoMovies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoMovies.swift; sourceTree = "<group>"; };
+		92AFCD0C1C064B9C00F1634D /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStackManager.swift; sourceTree = "<group>"; };
 		A8B976CBC43CC8FC75DA3EF3 /* Pods-StreamnationMovies.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StreamnationMovies.debug.xcconfig"; path = "Pods/Target Support Files/Pods-StreamnationMovies/Pods-StreamnationMovies.debug.xcconfig"; sourceTree = "<group>"; };
 		DBB4A085AFF8152D09E6385B /* Pods-StreamnationMovies.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StreamnationMovies.release.xcconfig"; path = "Pods/Target Support Files/Pods-StreamnationMovies/Pods-StreamnationMovies.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -148,6 +154,7 @@
 			isa = PBXGroup;
 			children = (
 				9263992B1C05234800885CFB /* AppDelegate.swift */,
+				92AFCD0A1C0636B300F1634D /* CoreData */,
 				9232F54D1C05272E00AA5F88 /* Controller */,
 				9232F54B1C05271300AA5F88 /* CustomInfiniteIndicator */,
 				9263992F1C05234800885CFB /* Main.storyboard */,
@@ -155,6 +162,7 @@
 				926399371C05234800885CFB /* LaunchScreen.storyboard */,
 				9263993A1C05234800885CFB /* Info.plist */,
 				926399321C05234800885CFB /* StreamnationMovies.xcdatamodeld */,
+				92AFCD0E1C065D6F00F1634D /* Model */,
 			);
 			path = StreamnationMovies;
 			sourceTree = "<group>";
@@ -175,6 +183,23 @@
 				926399501C05234800885CFB /* Info.plist */,
 			);
 			path = StreamnationMoviesUITests;
+			sourceTree = "<group>";
+		};
+		92AFCD0A1C0636B300F1634D /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				92AFCD071C0635EE00F1634D /* InfoMovies.swift */,
+				92AFCD061C0635EE00F1634D /* InfoMovies+CoreDataProperties.swift */,
+			);
+			name = CoreData;
+			sourceTree = "<group>";
+		};
+		92AFCD0E1C065D6F00F1634D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				92AFCD0C1C064B9C00F1634D /* CoreDataStackManager.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -361,7 +386,10 @@
 			files = (
 				9232F5421C05248400AA5F88 /* StreamnationCoverMoviesCollectionViewCell.swift in Sources */,
 				926399341C05234800885CFB /* StreamnationMovies.xcdatamodeld in Sources */,
+				92AFCD0D1C064B9C00F1634D /* CoreDataStackManager.swift in Sources */,
+				92AFCD091C0635EE00F1634D /* InfoMovies.swift in Sources */,
 				9232F5441C0524D000AA5F88 /* StreamnationMoviesCollectionViewController.swift in Sources */,
+				92AFCD081C0635EE00F1634D /* InfoMovies+CoreDataProperties.swift in Sources */,
 				9232F5461C05251900AA5F88 /* StreamnationMoviesDetailsViewController.swift in Sources */,
 				9232F54A1C05259100AA5F88 /* CustomInfiniteIndicator.swift in Sources */,
 				9263992C1C05234800885CFB /* AppDelegate.swift in Sources */,

@@ -18,20 +18,38 @@ private let reuseIdentifier = "StreamnationMoviesCell"
 private let sectionInsets = UIEdgeInsets(top: 50.0, left: 20.0, bottom: 50.0, right: 20.0)
 private let showDetailsSegueIndentifier = "showDetails"
 
-class StreamnationMoviesCollectionViewController: UICollectionViewController {
+class StreamnationMoviesCollectionViewController: UICollectionViewController, NSFetchedResultsControllerDelegate {
     
-    var directory = [InfoMovies]()
-    var newDirectory = [InfoMovies]()
+    var sharedContext: NSManagedObjectContext {
+        get {
+            return CoreDataStackManager.sharedInstance().managedObjectContext
+        }
+    }
+    
+    lazy var fetchedResultsController: NSFetchedResultsController = {
+        let fetchRequest = NSFetchRequest(entityName: "InfoMovies")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+            managedObjectContext: self.sharedContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        return fetchedResultsController
+        
+    }()
+    
+    var directory = [InfoMovie]()
+    var newDirectory = [InfoMovie]()
     var directoryCoreData = [NSManagedObject]()
     var listProfileImageUrl = [String]()
     var indexPage: Int = 1
     var indexPerPage: Int = 10
-    var i = 2;
     
-    struct InfoMovies {
+    struct InfoMovie {
         var name:String!
         var cover:UIImage!
     }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,14 +64,20 @@ class StreamnationMoviesCollectionViewController: UICollectionViewController {
         collectionView?.alwaysBounceVertical = true
         fetchData(nil)
         
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {}
+        fetchedResultsController.delegate = self
         
         /*
         -_- CoreData -_-
         -_- If you want to try, and check that I use well a persistent system, you can remove the Data and run again
         -_- Use the function removeData() just above
         */
-        removeData()
+        //removeData()
     }
+    
+    
     
     private func fetchData(handler: (Void -> Void)?) {
         loadData(indexPage++)
@@ -61,121 +85,40 @@ class StreamnationMoviesCollectionViewController: UICollectionViewController {
     
     
     func loadData(indexPage: Int){
-        let url = ""
-        newDirectory = []
-        var indexPaths = [NSIndexPath]()
-        var index = self.directory.count
-        var urlCover = "http://lorempixel.com/400/200/"
-        
-        Alamofire.request(.GET, url, parameters: nil)
-            .responseJSON { reponse in
-                if let jsonResponse = reponse.result.value {
-                    let json = JSON(jsonResponse)
-                    for (_,subJson):(String, JSON) in json["XXXX"] {
-                        if let name = subJson["XXXX"].string {
-                            if (self.nameImagePresentInCoreData(name) == false){
-                                if let cover = subJson["XXXX"].string {
-                                    
-                                    if (self.i % 3 == 0){
-                                        urlCover = "http://lorempixel.com/400/200/"
-                                    } else if (self.i%3 == 1){
-                                        urlCover = "http://lorempixel.com/200/200/"
-                                    } else {
-                                        urlCover = "http://lorempixel.com/200/400/"
-                                    }
-                                    self.i++
-                                    print(urlCover)
-//                                    let urlCover = "http://lorempixel.com/400/200/"
-                                    //let urlCover = "http://www.demotivateur.fr/images-buzz/1000/Chat-Mignon-1.png"
-                                    /*
-                                    Uncomment here if you want to use your cover Url from your API
-                                    */
-                                    //let urlCover = cover
-                                    Alamofire.request(.GET, urlCover)
-                                        .responseImage { response in
-                                            if let image = response.result.value {
-                                                /* If you don't want to use CoreData */
-                                                //self.directory.append(InfoMovies(name: name, cover: image))
-                                                index++
-                                                let indexPath = NSIndexPath(forItem: index, inSection: 0)
-                                                indexPaths.append(indexPath)
-                                                /* CoreData */
-                                                self.saveNameAndCover(name, cover: image)
-                                                print("I download the image")
-                                                self.collectionView?.reloadData()
-                                            }
-                                    }
-                                }
-                            } else {
-                                print("Name is already in CoreData")
-                            }
-                        }
-                    }
-                }
-                self.collectionView?.reloadData()
-                self.collectionView?.performBatchUpdates({ () -> Void in
-                    self.collectionView?.insertItemsAtIndexPaths(indexPaths)
-                    }, completion: { (finished) -> Void in
-                        self.collectionView?.finishInfiniteScroll()
-                });
-        }
-        
+        print("I load data")
     }
     
-    
-    
-    /*  Function to check if a name is already in CoreData
-    If it is not, I will download the picture
-    */
-    func nameImagePresentInCoreData(name:String) -> Bool {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext
-        let fetchRequest = NSFetchRequest(entityName:"InfoMovies")
-        do {
-            let fetchedResults = try managedContext.executeFetchRequest(fetchRequest) as? [NSManagedObject]
-            if let results = fetchedResults {
-                for info in results {
-                    let nameCoreData = info.valueForKey("name") as! String
-                    if (nameCoreData == name){
-                        return true
-                    }
-                }
-                do {
-                    try managedContext.save()
-                } catch {
-                    fatalError("Failure to save context: \(error)")
-                }
-                
-            } else {
-                print("Could not fetch")
+    func nameimagePresentInCoreData(name:String) -> Bool {
+        let infoMoviesFetchRequest = NSFetchRequest(entityName: "InfoMovies")
+        let primarySortDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        
+        infoMoviesFetchRequest.sortDescriptors = [primarySortDescriptor]
+        
+        let allMovies = (try! sharedContext.executeFetchRequest(infoMoviesFetchRequest)) as! [InfoMovies]
+        
+        for movie in allMovies {
+            if (movie.name == name){
+                return true
             }
-        } catch {
-            fatalError("Failure to save context: \(error)")
         }
         return false
     }
     
-    /*
-    Function to save the name and the cover picture in CoreData
-    */
-    func saveNameAndCover(name: String, cover:UIImage) {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext
-        let entity =  NSEntityDescription.entityForName("InfoMovies",
-            inManagedObjectContext:managedContext)
-        let infoMovie = NSManagedObject(entity: entity!,
-            insertIntoManagedObjectContext: managedContext)
-        
-        infoMovie.setValue(name, forKey: "name")
-        infoMovie.setValue(UIImageJPEGRepresentation(cover, 1), forKey: "coverImage")
-        
+    func deleteAll(){
+        fetchedResultsController.fetchedObjects?.forEach({sharedContext.deleteObject($0 as! NSManagedObject)})
+    }
+    
+    func saveNameAndCover(name:String, cover:UIImage){
+        let newInfoMovie = NSEntityDescription.insertNewObjectForEntityForName("InfoMovies", inManagedObjectContext: sharedContext) as! InfoMovies
+        newInfoMovie.coverImage = UIImageJPEGRepresentation(cover, 1)
+        newInfoMovie.name = name
         do {
-            try managedContext.save()
-            directoryCoreData.append(infoMovie)
-        } catch let error as NSError  {
-            print("Could not save \(error), \(error.userInfo)")
+            CoreDataStackManager.sharedInstance().saveContext()
+            collectionView?.reloadData()
+        } catch _ {
         }
     }
+    
     
     
     /*
@@ -208,40 +151,7 @@ class StreamnationMoviesCollectionViewController: UICollectionViewController {
             fatalError("Failure to save context: \(error)")
         }
     }
-    
-    /*
-    I load my data from CoreData
-    */
-    override func viewWillAppear(animated: Bool) {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext
-        let fetchRequest = NSFetchRequest(entityName: "InfoMovies")
-        do {
-            let results =
-            try managedContext.executeFetchRequest(fetchRequest)
-            directoryCoreData = results as! [NSManagedObject]
-        } catch let error as NSError {
-            print("Could not fetch \(error), \(error.userInfo)")
-        }
-    }
-    
-    
-    /*
-    Function to send data to the detailsViewController
-    It is useful if you don't want to use CoreData
-    */
-    /*
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    if segue.identifier == showDetailsSegueIndentifier {
-    if let indexPath = collectionView?.indexPathForCell(sender as! UICollectionViewCell) {
-    let detailsVC = segue.destinationViewController as! StreamnationMoviesDetailsViewController
-    detailsVC.nameVariable = directory[indexPath.row].name
-    detailsVC.imageVariable = directory[indexPath.row].cover
-    }
-    }
-    }
-    */
-    
+
     
     /*
     Function to send data to the detailsViewController with CoreData
@@ -250,14 +160,10 @@ class StreamnationMoviesCollectionViewController: UICollectionViewController {
         if segue.identifier == showDetailsSegueIndentifier {
             if let indexPath = collectionView?.indexPathForCell(sender as! UICollectionViewCell) {
                 let detailsVC = segue.destinationViewController as! StreamnationMoviesDetailsViewController
-                let infoMovie = directoryCoreData[indexPath.row]
-                let name = infoMovie.valueForKey("name") as! String
-                let coverImage = UIImage(data: infoMovie.valueForKey("coverImage") as! NSData)
+                let infoMovie = fetchedResultsController.objectAtIndexPath(indexPath) as! InfoMovies
+                let name = infoMovie.name
+                let coverImage = UIImage(data: infoMovie.coverImage!)
                 let imageView = UIImageView(image: coverImage)
-                //imageView.autoresizingMask = [.FlexibleBottomMargin, .FlexibleTopMargin]
-                
-               // imageView.contentMode = .ScaleAspectFit
-               // imageView.contentMode = .ScaleToFill
                 detailsVC.nameVariable = name
                 detailsVC.imageVariable = imageView
             }
@@ -293,42 +199,18 @@ class StreamnationMoviesCollectionViewController: UICollectionViewController {
     If you don't want to use CoreData, use: return directory.count
     */
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return directoryCoreData.count
+        return fetchedResultsController.fetchedObjects!.count
     }
     
-    /*
-    Function to set information to the cell (without CoreData)
-    
-    */
-    /*
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! StreamnationCoverMoviesCollectionViewCell
-    
-    let coverImage = directory[indexPath.row].cover
-    cell.coverImageView.image = coverImage
-    cell.coverImageView.layer.borderWidth = 0.3
-    cell.nameLabel.text = directory[indexPath.row].name
-    return cell
-    }
-    */
-    
-    
-    /*
-    Function to set information to the cell (with CoreData)
-    */
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! StreamnationCoverMoviesCollectionViewCell
-        
-        let infoMovie = directoryCoreData[indexPath.row]
-        let name = infoMovie.valueForKey("name") as! String
-        let coverImage = UIImage(data: infoMovie.valueForKey("coverImage") as! NSData)
-        cell.coverImageView.image = coverImage
+        let infoMovies = fetchedResultsController.objectAtIndexPath(indexPath) as! InfoMovies
+        cell.nameLabel?.text = infoMovies.name
+        cell.coverImageView?.image = UIImage(data: infoMovies.coverImage!)
         cell.coverImageView.contentMode = .ScaleAspectFit
-        //cell.coverImageView.layer.borderWidth = 0.3
-        cell.nameLabel.text = name
         return cell
     }
-    
+
     // Return the size of my image
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         return CGSize(width: 100, height: 100)
