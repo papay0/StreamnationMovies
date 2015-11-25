@@ -13,11 +13,12 @@ class StreamnationMoviesDetailsViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     var nameVariable:String!
-    var imageVariable:UIImage!
+    var imageVariable:UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        imageView.contentMode = .ScaleAspectFit
     }
     
     override func didReceiveMemoryWarning() {
@@ -27,7 +28,7 @@ class StreamnationMoviesDetailsViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         nameLabel.text = "Name: "+nameVariable
-        imageView.image = imageVariable
+        imageView.image = imageVariable.image
     }
     
     /*
